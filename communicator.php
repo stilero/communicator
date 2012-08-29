@@ -21,10 +21,14 @@ class Communicator {
     protected $cookieFile;
     const HTTP_STATUS_OK = '200';
 
-    function __construct($url, $postVars, $config="") {
-        $this->isPost = true;
+    function __construct($url, $postArray="", $config="") {
+        $this->isPost = false;
         $this->url = $url;
-        $this->postVars = $postVars;
+        if(is_array($postArray) && !empty($postArray)){
+            $this->isPost = true;
+            $this->postVars = http_build_query($postArray);
+        }
+        
         $this->config = 
             array(
                 'curlUserAgent'         =>  'Communicator - www.stilero.com',
