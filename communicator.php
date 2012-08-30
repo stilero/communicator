@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     $Id$
+ * @version     1.2
  * @copyright   Copyright 2011 Stilero AB. All rights re-served.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
@@ -26,7 +26,7 @@ class Communicator {
         $this->url = $url;
         if(is_array($postArray) && !empty($postArray)){
             $this->isPost = true;
-            $this->postVars = http_build_query($postArray);
+            $this->postVars = $postArray;
         }
         
         $this->config = 
@@ -122,6 +122,9 @@ class Communicator {
     private function _initCookieFile(){
         if(!$this->config['curlUseCookies']){
             return;
+        }
+        if (!defined('DS')){
+            define('DS', DIRECTORY_SEPARATOR);
         }
         try {
             $this->cookieFile = tempnam(DS."tmp", "cookies");
