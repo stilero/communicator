@@ -171,9 +171,11 @@ class Communicator {
     }
     
     public function setPostVars($postVars){
-        if(is_array($postVars) && !empty($postVars)){
-            $this->_isPost = true;
-            $this->_postVars = http_build_query($postVars);
+        if(is_array($postVars)){
+            if(!empty($postVars)){
+                $this->_isPost = true;
+                $this->_postVars = http_build_query($postVars);
+            }
         }else if($postVars != ""){
             $this->_postVars = $postVars;
             $this->_isPost = true;
