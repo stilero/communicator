@@ -120,6 +120,9 @@ class Communicator {
     }
     
     protected function _buildHTTPHeader(){
+        if(isset($this->_header)){
+            return;
+        }
         $header[0] = "Accept: text/xml,application/xml,application/xhtml+xml,"; 
         $header[0] .= "text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5"; 
         $header[] = "Cache-Control: max-age=0"; 

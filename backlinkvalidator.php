@@ -36,7 +36,11 @@ defined('_JEXEC') or die('Restricted access');
 class BacklinkValidator extends Communicator{
     var $Linker;
     var $Link;
+    var $_errors = array();
     private $_backlinks = array();
+    public static $ERROR_WRONG_ANCHOR = '1';
+    public static $ERROR_NOT_FOUND = '2';
+    public static $ERROR_NO_FOLLOW = '3';
     
     public function __construct($Link, $Linker, $config="") {
         parent::__construct();
@@ -73,14 +77,18 @@ class BacklinkValidator extends Communicator{
             $expectedHref = $this->Link->href;
             $actualText = $this->_config['isIgnoringAnchorCasing'] ? strtolower($link->nodeValue) : $link->nodeValue;
             $expectedText = $this->_config['isIgnoringAnchorCasing'] ? strtolower($this->Link->text) : $this->Link->text;
-            if(($actualHref == $expectedHref) && ($actualText == $expectedText)){
-                $backlink = new Link();
-                $backlink->href = $actualHref;
-                $backlink->text = $actualText;
-                $backlink->rel = $link->getAttribute('rel');
-                $backlink->alt = $link->getAttribute('alt');
-                if($this->_isValid($backlink)){
-                    $this->_backlinks[] = $backlink;                
+            if($actualHref == $expectedHref){
+                if($actualText = $expectedText){
+                    $backlink = new Link();
+                    $backlink->href = $actualHref;
+                    $backlink->text = $actualText;
+                    $backlink->rel = $link->getAttribute('rel');
+                    $backlink->alt = $link->getAttribute('alt');
+                    if($this->_isValid($backlink)){
+                        $this->_backlinks[] = $backlink;                
+                    }
+                }else{
+                    $this->_errors[] = self::$ERROR_WRONG_ANCHOR;
                 }
             }
         }
@@ -89,6 +97,7 @@ class BacklinkValidator extends Communicator{
     private function _isValid($link){
         $isNoFollowValid = $this->_config['isNoFollowValid'];
         if($link->isNoFollow() && !$isNoFollowValid){
+            $this->_errors[] = self::$ERROR_NO_FOLLOW;
             return false;
         }
         return true;
@@ -99,5 +108,9 @@ class BacklinkValidator extends Communicator{
             return true;
         }
         return false;
+    }
+    
+    public function getErrors(){
+        return $this->_errors;
     }
 }
