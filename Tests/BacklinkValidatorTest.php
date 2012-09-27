@@ -56,14 +56,14 @@ class BacklinkValidatorTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($isFound);
     }
     
-    public function testFoundLinkWithNoFollow(){
-        $html = HTMLGeneratorHelper::htmlWithKnownLink($this->link->href, $this->link->text, TRUE);
-        $this->_response = $html;
-        $this->object->_response = $html;
-        $this->object->findBackLinks();
-        $isFound = $this->object->isFound();
-        $this->assertFalse($isFound);
-    }
+//    public function testFoundLinkWithNoFollow(){
+//        $html = HTMLGeneratorHelper::htmlWithKnownLink($this->link->href, $this->link->text, TRUE);
+//        $this->_response = $html;
+//        $this->object->_response = $html;
+//        $this->object->findBackLinks();
+//        $isFound = $this->object->isFound();
+//        $this->assertFalse($isFound);
+//    }
     
     public function testNotFoundLink(){
         $html = HTMLGeneratorHelper::htmlWithUnknownLinks();

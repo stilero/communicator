@@ -56,7 +56,7 @@ class Communicator {
                 'curlTimeout'           =>  20,
                 'curlReturnTransf'      =>  true, //return the handle as a string
                 'curlSSLVerifyPeer'     =>  false,
-                'curlFollowLocation'    =>  false,
+                'curlFollowLocation'    =>  true,
                 'curlProxy'             =>  false,
                 'curlProxyPassword'     =>  false,
                 'curlEncoding'          =>  false,
@@ -72,6 +72,7 @@ class Communicator {
     }
     
     public function query(){
+        $this->resetResponse();
         $this->_curlHandler = curl_init(); 
         $this->_setupCurl();
         $this->_response = curl_exec ($this->_curlHandler);
@@ -165,6 +166,11 @@ class Communicator {
         }
     }
     
+    public function resetResponse(){
+        $this->_response = '';
+        $this->_responseInfoParts = array();
+    }
+    
     public function setUrl($url){
         $this->_url = $url;
     }
@@ -196,7 +202,7 @@ class Communicator {
     public function getInfoHTTPCode(){
         return $this->_responseInfoParts['http_code'];
     }
-    
+        
     public function isOK(){
         if ($this->_responseInfoParts['http_code'] == self::HTTP_STATUS_OK) {
             return true;
