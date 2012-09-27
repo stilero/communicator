@@ -37,7 +37,7 @@ class BacklinkValidator extends Communicator{
     var $Linker;
     var $Link;
     var $_errors = array();
-    private $_backlinks = array();
+    protected $_backlinks = array();
     const ERROR_WRONG_ANCHOR = '100';
     const ERROR_NOT_FOUND = '200';
     const ERROR_NO_FOLLOW = '300';
@@ -54,7 +54,7 @@ class BacklinkValidator extends Communicator{
         }
         $this->Link = $Link;
         $this->Linker = $Linker;
-        $this->_config = array_merge($defaultConfig, $this->_config);
+        $this->_config = array_merge($this->_config, $defaultConfig);
         $this->setUrl($this->Linker->baseURL());
         $this->setPostVars($this->Linker->queryVars());
     }
@@ -65,7 +65,7 @@ class BacklinkValidator extends Communicator{
         return $this->isFound();
     }
     
-    private function _findBackLinks(){
+    protected function _findBackLinks(){
         $html = new DOMDocument();
         $html->recover = true;
         $html->strictErrorChecking = false;
@@ -76,7 +76,9 @@ class BacklinkValidator extends Communicator{
             $actualHref = $link->getAttribute('href');
             $expectedHref = $this->Link->href;
             $actualText = $this->_config['isIgnoringAnchorCasing'] ? strtolower($link->nodeValue) : $link->nodeValue;
+            $actualText = htmlentities($actualText);
             $expectedText = $this->_config['isIgnoringAnchorCasing'] ? strtolower($this->Link->text) : $this->Link->text;
+            $expectedText = htmlentities($expectedText);
             if($actualHref == $expectedHref){
                 if($actualText == $expectedText){
                     $backlink = new Link();
@@ -94,7 +96,7 @@ class BacklinkValidator extends Communicator{
         }
     }
     
-    private function _isValid($link){
+    protected function _isValid($link){
         $isNoFollowValid = $this->_config['isNoFollowValid'];
         if($link->isNoFollow() && !$isNoFollowValid){
             $this->_errors[] = self::ERROR_NO_FOLLOW;

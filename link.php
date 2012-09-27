@@ -76,4 +76,12 @@ class Link{
         }
         return $vars;
     }
+    
+    public function __get($name) {
+        return $name;
+    }
+    
+    public function __set($name, $value) {
+        $this->$name = $value;
+    }
 }
